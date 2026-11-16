@@ -106,6 +106,8 @@ def nav_buttons(prev, nxt, key):
 # ---------------- 모둠 입장 ----------------
 def group_login():
     st.title("AI 훈련소")
+    c = auth.current_class()
+    st.markdown(ui.class_chip(c["name"]) if c else "", unsafe_allow_html=True)
     st.write("모둠 이름과 모둠 비밀번호로 들어가요. 쓴 내용은 서버에 저장돼서, 다른 날 다른 컴퓨터에서 들어와도 이어서 할 수 있어요.")
     _, mid, _ = st.columns([1, 1.6, 1])
     with mid, st.container(border=True):
@@ -594,6 +596,9 @@ VIEWS = {"rules": step_rules, "flow": step_flow, "ask": step_ask, "label": step_
 
 
 def render():
+    if not auth.current_class():
+        ui.no_class_notice("AI 훈련소")
+        return
     if not gid():
         group_login()
         return
@@ -608,7 +613,8 @@ def render():
     head = st.container(horizontal=True, vertical_alignment="bottom")
     with head.container():
         st.title("AI 훈련소")
-        st.caption(f"**{ws['name']}** 모둠으로 들어와 있어요. 쓴 내용은 자동으로 저장돼요.")
+        c = auth.current_class()
+        st.caption(f"**{c['name']}** · **{ws['name']}** 모둠으로 들어와 있어요. 쓴 내용은 자동으로 저장돼요.")
     head.space("stretch")
     with head.popover("모둠"):
         st.caption("규칙, 순서도, 평가 기록을 모두 지우고 처음부터 다시 써요. (광장에 올린 AI는 그대로 있어요)")

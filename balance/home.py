@@ -1,10 +1,13 @@
 """처음 화면 — AI 훈련소 / AI 광장 입구"""
 import streamlit as st
 
-from . import nav
+from . import auth, nav, ui
 
 
 def render():
+    c = auth.current_class()
+    if c:
+        st.markdown(ui.class_chip(c["name"]), unsafe_allow_html=True)
     st.markdown('<h1 style="font-size:clamp(2.2rem,5vw,3.6rem);line-height:1.15;letter-spacing:-.035em;margin-bottom:.4rem">'
                 '공정한 AI,<br>우리 모둠이 직접 가르쳐요</h1>'
                 '<p class="ba-lead">AI는 받은 규칙대로 말해요. 모둠이 규칙과 응답 순서도를 써서 AI가 한쪽으로 치우치지 않게 가르치고, '

@@ -41,6 +41,8 @@ h1, h2, h3{ color:var(--ink); letter-spacing:-.02em; }
 .ba-brand{ display:flex; align-items:center; gap:9px; font-weight:700; font-size:1.1rem; color:var(--ink); }
 .ba-hand{ font-family:'Gaegu', cursive; color:var(--red); font-size:1.3rem; line-height:1; }
 .ba-lead{ color:var(--ink-2); font-size:1.05rem; }
+.ba-class{ display:inline-flex; align-items:center; gap:6px; font-size:.9rem; font-weight:700; color:var(--ink); background:var(--sheet);
+  border:1px solid var(--box-line); border-radius:999px; padding:.2em .85em; margin-bottom:.35rem; box-shadow:var(--box-shadow); }
 .ba-muted{ color:var(--muted); }
 .ba-badge{ display:inline-flex; align-items:center; gap:.35em; font-size:.85rem; font-weight:700; padding:.15em .75em; border-radius:999px; background:#EEF2F8; white-space:nowrap; }
 .ba-badge .v{ font-weight:500; }
@@ -169,6 +171,19 @@ JS = r"""
 })();
 </script>
 """
+
+
+def class_chip(name):
+    return f'<div class="ba-class">🏫 {esc(name)}</div>'
+
+
+def no_class_notice(title):
+    from . import nav
+    st.title(title)
+    with st.container(border=True):
+        st.markdown("**아직 고른 반이 없어요.**")
+        st.write("선생님 메뉴의 ‘반 관리’에서 반을 만들거나 ‘이 반 보기’를 누르면 그 반의 훈련소와 광장이 보여요.")
+        st.page_link(nav.page("teacher"), label="선생님 메뉴로 가기 →")
 
 
 def inject_css():

@@ -87,7 +87,8 @@ def live_grid(s):
 def list_page(s):
     st.markdown('<h1 style="margin-bottom:0">AI 광장 <span class="ba-live" title="새 AI와 댓글이 저절로 보여요"><i></i>실시간</span></h1>',
                 unsafe_allow_html=True)
-    st.markdown('<p class="ba-lead">친구들이 공정하게 훈련시킨 AI예요. 하나를 골라 대화하고, 💬 댓글로 느낀 점이나 고칠 점을 남겨 보세요.</p>',
+    c = auth.current_class(s)
+    st.markdown(ui.class_chip(c["name"]) + '<p class="ba-lead">우리 반 친구들이 공정하게 훈련시킨 AI예요. 하나를 골라 대화하고, 💬 댓글로 느낀 점이나 고칠 점을 남겨 보세요.</p>',
                 unsafe_allow_html=True)
     a, b = st.columns([1.3, 1], vertical_alignment="center")
     a.text_input("AI 찾기", key="plaza_q", placeholder="AI 이름이나 모둠 찾기", label_visibility="collapsed", persist_state="session")
@@ -272,6 +273,9 @@ def bot_page(bot_id, s):
 # ---------------- 화면 ----------------
 def render():
     s = auth.load_settings()
+    if not auth.current_class(s):
+        ui.no_class_notice("AI 광장")
+        return
     bot_id = st.query_params.get("bot")
     if bot_id:
         bot_page(bot_id, s)
