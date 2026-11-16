@@ -204,11 +204,15 @@ def add_idea(key):
     if not idea:
         return
     ws = cur()
-    r = ws.get("rules", "")
+    rk = f"rules1_{ws['gid']}"
+    # 규칙 칸에 방금 쓴 글(아직 저장 전일 수도 있어요)을 먼저 쓰고, 없으면 저장된 규칙을 써요
+    r = st.session_state.get(rk)
+    if not isinstance(r, str):
+        r = ws.get("rules", "")
     sep = "" if not r or r.endswith("\n") else "\n"
     ws["rules"] = (r + sep + idea["starter"])[:LIMITS["prompt"]]
     data.save_group(ws)
-    st.session_state[f"rules1_{ws['gid']}"] = ws["rules"]
+    st.session_state[rk] = ws["rules"]
 
 
 def step_rules(ws):
@@ -225,7 +229,7 @@ def step_rules(ws):
         st.text_area("AI에게 줄 규칙", key=k, height=330, max_chars=LIMITS["prompt"], on_change=save_field, args=("rules", k),
                      placeholder="예)\n너는 중학생의 궁금증을 함께 풀어 주는 AI야.\n- 질문이 한쪽으로 치우쳐 있으면 …\n- 의견이 갈리는 주제는 …",
                      help="AI는 이 글을 읽고 그대로 행동해요. 치우친 질문을 받았을 때 어떻게 답해야 하는지 가르쳐 주세요.")
-        st.caption("칸 밖을 누르면 자동으로 저장돼요.")
+        st.caption("쓰는 동안 자동으로 저장돼요.")
     with right, st.container(border=True):
         st.markdown("**아이디어 카드**")
         st.caption("막히면 눌러 보세요. 문장의 앞부분을 규칙 칸 끝에 넣어 줄게요. 뒷부분은 직접 완성해요.")
@@ -607,8 +611,6 @@ def render():
         st.caption(f"**{ws['name']}** 모둠으로 들어와 있어요. 쓴 내용은 자동으로 저장돼요.")
     head.space("stretch")
     with head.popover("모둠"):
-        st.button("다른 모둠으로 들어가기", on_click=logout_group, use_container_width=True)
-        st.divider()
         st.caption("규칙, 순서도, 평가 기록을 모두 지우고 처음부터 다시 써요. (광장에 올린 AI는 그대로 있어요)")
         sure = st.checkbox("정말 처음부터 다시 쓸게요", key=f"resetok_{g}")
         st.button("처음부터 다시 쓰기", disabled=not sure, on_click=reset_work, use_container_width=True)
